@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: ctandart-postgres
+    environment:
+      POSTGRES_DB: ctandart
+      POSTGRES_USER: ctandart
+      POSTGRES_PASSWORD: ctandart
+    ports:
+      - "5432:5432"
+    volumes:
+      - ctandart_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ctandart -d ctandart"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    container_name: ctandart-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  ctandart_postgres_data:
