@@ -199,7 +199,7 @@ button {
 .user-chip {
   align-items: center;
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
 .avatar,
@@ -207,6 +207,7 @@ button {
 .client-avatar {
   align-items: center;
   display: flex;
+  flex: none;
   justify-content: center;
 }
 
@@ -223,13 +224,27 @@ button {
 
 .user-name {
   color: #e4e6f0;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 2px;
 }
 
 .user-role {
   color: #7b839e;
-  font-size: 10.5px;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.user-cell {
+  align-items: center;
+  display: inline-flex;
+  gap: 10px;
+}
+
+.user-cell-name {
+  color: var(--ink);
+  font-weight: 600;
 }
 
 .logout-btn {
@@ -298,6 +313,38 @@ button {
 
 .topbar-actions {
   margin-left: auto;
+}
+
+.lang-switcher {
+  align-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+}
+
+.lang-btn {
+  background: transparent;
+  border-radius: 6px;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 5px 8px;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.lang-btn:hover {
+  color: var(--ink);
+}
+
+.lang-btn.active {
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  color: var(--accent);
 }
 
 .icon-btn {
@@ -908,18 +955,91 @@ tbody tr:last-child td {
 }
 
 .notice {
+  align-items: flex-start;
+  border-bottom: 1px dashed var(--line);
   display: flex;
-  gap: 10px;
+  gap: 14px;
+  padding-bottom: 10px;
 }
 
-.debt-row,
-.top-row {
+.notice:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.notice-badge-cell {
+  display: flex;
+  flex: none;
+  justify-content: flex-start;
+  width: 105px;
+}
+
+.notice-badge-cell .badge {
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+.notice-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notice-content b {
+  color: var(--ink);
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 3px;
+}
+
+.debt-row {
   align-items: center;
   border-bottom: 1px dashed var(--line);
   display: flex;
   gap: 10px;
   justify-content: space-between;
   padding: 9px 0;
+}
+
+.top-row {
+  align-items: center;
+  border-bottom: 1px dashed var(--line);
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  padding: 9px 0;
+}
+
+.top-row > div:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+
+.top-row b {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.top-row .mono {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.top-list-item {
+  align-items: center;
+  border-bottom: 1px dashed var(--line);
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.top-list-item:last-child {
+  border-bottom: none;
 }
 
 .debt-sum {
@@ -937,6 +1057,63 @@ tbody tr:last-child td {
   padding: 44px 20px;
   position: fixed;
   z-index: 100;
+}
+
+.overlay.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.modal-label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.modal-label input,
+.modal-label select,
+.modal-label textarea {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  min-height: 42px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  margin-top: 4px;
+  background: var(--surface);
+  color: var(--ink);
+  width: 100%;
+  transition: border-color 0.15s ease;
+}
+
+.modal-label input:focus,
+.modal-label select:focus,
+.modal-label textarea:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.toast-notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--ink);
+  color: #ffffff;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .overlay.active {
