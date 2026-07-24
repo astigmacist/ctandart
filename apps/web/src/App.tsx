@@ -97,6 +97,10 @@ const initialClients: Client[] = [
   { name: "ИП Сатыбалдиева А.", sub: "салон красоты «Ажар»", phone: "+7 700 981 2234", orders: 3, total: 210000, debt: 0 },
   { name: "ТОО «Сыр Дария Восток»", sub: "оптовая торговля", phone: "+7 702 456 7781", orders: 11, total: 1980000, debt: 460000 },
   { name: "Ресторан «Атамекен»", sub: "общественное питание", phone: "+7 708 123 9087", orders: 7, total: 860000, debt: 0 },
+  { name: "ТОО «Казахтелеком Кызылорда»", sub: "телекоммуникации и IT", phone: "+7 724 227 1000", orders: 12, total: 3450000, debt: 0 },
+  { name: "Фитнес-клуб «Olympus»", sub: "спорт и фитнес", phone: "+7 701 777 9900", orders: 5, total: 920000, debt: 150000 },
+  { name: "Автосалон «Hyundai Kyzylorda»", sub: "продажа автомобилей", phone: "+7 705 333 4455", orders: 8, total: 4200000, debt: 0 },
+  { name: "Сеть аптек «Биосфера»", sub: "фармацевтика", phone: "+7 702 888 1122", orders: 4, total: 680000, debt: 45000 },
 ];
 
 const orderColumns: OrderColumn[] = [
@@ -110,6 +114,10 @@ const orderColumns: OrderColumn[] = [
 ];
 
 const initialOrders: Order[] = [
+  { id: "2055", client: "Фитнес-клуб «Olympus»", title: "Брендирование автопарка (5 машин), оракал", sum: 350000, due: "12 июл", dueStatus: "ok", col: "new", who: "ГС" },
+  { id: "2054", client: "Автосалон «Hyundai Kyzylorda»", title: "Светодиодный стела-пилон 4×1.2 м", sum: 1250000, due: "15 июл", dueStatus: "ok", col: "new", who: "НБ" },
+  { id: "2053", client: "Сеть аптек «Биосфера»", title: "Вывеска световая + крест LED", sum: 280000, due: "11 июл", dueStatus: "ok", col: "calc", who: "ГС" },
+  { id: "2052", client: "ТОО «Казахтелеком Кызылорда»", title: "Информационные стенды A1, 10 шт", sum: 195000, due: "10 июл", dueStatus: "ok", col: "calc", who: "НБ" },
   { id: "2051", client: "Магазин «Балдырган»", title: "Наклейки на витрину, оракал", sum: 32000, due: "5 июл", dueStatus: "ok", col: "new", who: "ГС" },
   { id: "2050", client: "ИП Сатыбалдиева А.", title: "Вывеска световая 2×0.6 м", sum: 186000, due: "8 июл", dueStatus: "ok", col: "new", who: "ГС" },
   { id: "2048", client: "ТОО «Сыр Дария Восток»", title: "Баннеры для склада, 5 шт", sum: 145000, due: "6 июл", dueStatus: "ok", col: "calc", who: "НБ" },
@@ -128,11 +136,17 @@ const initialOrders: Order[] = [
 
 const initialMaterials: Material[] = [
   { name: "Баннерная ткань 440г", unit: "м²", stock: 210, min: 100, cost: 1450, status: "good" },
-  { name: "Пленка Oracal 641", unit: "м²", stock: 18, min: 40, cost: 2100, status: "bad" },
-  { name: "ПВХ 3 мм", unit: "лист", stock: 24, min: 15, cost: 9800, status: "good" },
+  { name: "Пленка Oracal 641 (белая)", unit: "м²", stock: 18, min: 40, cost: 2100, status: "bad" },
+  { name: "Пленка Oracal 8500 (транслюцентная)", unit: "м²", stock: 55, min: 30, cost: 3400, status: "good" },
+  { name: "ПВХ вспененный 3 мм", unit: "лист", stock: 24, min: 15, cost: 9800, status: "good" },
+  { name: "ПВХ вспененный 5 мм", unit: "лист", stock: 8, min: 12, cost: 14500, status: "warn" },
   { name: "Акрил прозрачный 3 мм", unit: "лист", stock: 9, min: 10, cost: 14200, status: "warn" },
+  { name: "Акрил молочный 3 мм", unit: "лист", stock: 15, min: 10, cost: 15600, status: "good" },
   { name: "Профиль алюминиевый для букв", unit: "пог.м", stock: 64, min: 50, cost: 3200, status: "good" },
-  { name: "Блок питания 12V 5A", unit: "шт", stock: 6, min: 12, cost: 6800, status: "bad" },
+  { name: "Светодиодные модули LED 12V", unit: "шт", stock: 450, min: 200, cost: 180, status: "good" },
+  { name: "Блок питания 12V 5A (IP67)", unit: "шт", stock: 6, min: 12, cost: 6800, status: "bad" },
+  { name: "Блок питания 12V 12.5A", unit: "шт", stock: 14, min: 8, cost: 11200, status: "good" },
+  { name: "Люверсы металлические 12мм", unit: "упак", stock: 5, min: 10, cost: 4500, status: "warn" },
 ];
 
 const prodTasks = [
@@ -200,8 +214,8 @@ export default function App() {
   const [workspace, setWorkspace] = useState<RoleWorkspace | null>(null);
   const [roles, setRoles] = useState<RoleOption[]>([]);
   const [users, setUsers] = useState<UserProfile[]>([]);
-  const [loginEmail, setLoginEmail] = useState("owner@ctandart.local");
-  const [loginPassword, setLoginPassword] = useState("Owner2026!");
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
   const [activeView, setActiveView] = useState("dashboard");
   const [selectedClient, setSelectedClient] = useState(0);
   const [modalOrder, setModalOrder] = useState<string | null>(null);
@@ -240,12 +254,74 @@ export default function App() {
   const [materialsList, setMaterialsList] = useState<Material[]>(initialMaterials);
   const [financeList, setFinanceList] = useState<FinanceRecord[]>(initialFinance);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<{
+    actionName: string;
+    orderId: string;
+    taskTitle: string;
+    onConfirm: () => void;
+  } | null>(null);
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const searchResults = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return { orders: [], clients: [], materials: [], tasks: [] };
+
+    const matchedOrders = ordersList.filter(
+      (o) =>
+        o.id.toLowerCase().includes(q) ||
+        o.title.toLowerCase().includes(q) ||
+        o.client.toLowerCase().includes(q) ||
+        o.who.toLowerCase().includes(q)
+    );
+
+    const matchedClients = clientsList.filter(
+      (c) =>
+        c.name.toLowerCase().includes(q) ||
+        c.sub.toLowerCase().includes(q) ||
+        c.phone.toLowerCase().includes(q)
+    );
+
+    const matchedMaterials = materialsList.filter(
+      (m) =>
+        m.name.toLowerCase().includes(q) ||
+        m.unit.toLowerCase().includes(q)
+    );
+
+    const sampleTasks = [
+      { id: "2046", title: "Ребрендинг: вывеска + баннер", client: "ИП Ахметов Д.К.", status: "В работе (v2)" },
+      { id: "2044", title: "Объемные буквы, подсветка", client: "Магазин «Балдырган»", status: "Согласование (v1)" },
+      { id: "2050", title: "Вывеска световая 2×0.6 м", client: "ИП Сатыбалдиева А.", status: "Ожидает ТЗ" },
+      { id: "2039", title: "Печать баннера 6×3 м", client: "ТОО «Сыр Дария Восток»", status: "Печать в процессе" },
+      { id: "2038", title: "Ламинация меню A2, 20 шт", client: "Ресторан «Атамекен»", status: "В очереди" },
+      { id: "2035", title: "Резка объемных букв", client: "ИП Сатыбалдиева А.", status: "Просрочено" },
+      { id: "2031", title: "Монтаж баннера на фасад 3×2 м", client: "ИП Ахметов Д.К.", status: "В выезде" },
+      { id: "2029", title: "Указатели на объект, 8 шт", client: "ТОО «Кызылорда Строй Сервис»", status: "Готов к выезду" },
+    ];
+
+    const matchedTasks = sampleTasks.filter(
+      (t) =>
+        t.id.toLowerCase().includes(q) ||
+        t.title.toLowerCase().includes(q) ||
+        t.client.toLowerCase().includes(q) ||
+        t.status.toLowerCase().includes(q)
+    );
+
+    return { orders: matchedOrders, clients: matchedClients, materials: matchedMaterials, tasks: matchedTasks };
+  }, [searchQuery, ordersList, clientsList, materialsList]);
 
   const canManageUsers = user?.role === "owner" || user?.role === "admin";
   const canCreateOrder = user?.role === "owner" || user?.role === "admin" || user?.role === "manager";
   const navItems = useMemo(() => workspace?.modules.map((module) => navCatalog[module.key]).filter(Boolean) ?? [], [workspace]);
   const visibleViews = useMemo(() => new Set(navItems.map((item) => item.view)), [navItems]);
   const currentTitle: [string, string] = [t(`title_${activeView}`), t(`sub_${activeView}`)];
+  const isWarehouse = activeView === "warehouse" || activeView === "inventory";
+  const isOrders = activeView === "orders";
+  const isCrm = activeView === "crm";
+  const isMyTasks = activeView === "my_tasks";
+  const isGeneral = !isWarehouse && !isOrders && !isCrm && !isMyTasks;
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -342,42 +418,46 @@ export default function App() {
       <main className="login-page">
         <section className="login-panel ticket priority">
           <TicketCorners />
-          <div>
-            <div className="login-kicker">CtandART ERP · web service</div>
-            <h1 className="login-title">{t("loginTitle")}</h1>
-            <p className="login-copy">{t("loginCopy")}</p>
+          <div className="login-panel-top">
+            <div>
+              <div className="login-kicker">CtandART ERP · web service</div>
+              <h1 className="login-title">{t("loginTitle")}</h1>
+              <p className="login-copy">{t("loginCopy")}</p>
+            </div>
+            <select
+              className="lang-select"
+              value={lang}
+              onChange={(e) => changeLanguage(e.target.value as Language)}
+              aria-label="Язык / Tілі / Language"
+            >
+              <option value="ru">🇷🇺 Русский (RU)</option>
+              <option value="kk">🇰🇿 Қазақша (KK)</option>
+              <option value="en">🇬🇧 English (EN)</option>
+            </select>
           </div>
           <form className="login-form" onSubmit={login}>
             <label>
-              Email
-              <input value={loginEmail} onChange={(event) => setLoginEmail(event.target.value)} />
+              Email / Логин
+              <input
+                placeholder="owner@ctandart.local"
+                value={loginEmail}
+                onChange={(event) => setLoginEmail(event.target.value)}
+              />
             </label>
             <label>
               Пароль
-              <input type="password" value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} />
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={loginPassword}
+                onChange={(event) => setLoginPassword(event.target.value)}
+              />
             </label>
             {error ? <div className="form-error">{error}</div> : null}
             <button className="btn primary" disabled={isLoading} type="submit">
               {isLoading ? "..." : t("login")}
             </button>
           </form>
-          <div className="demo-logins">
-            <div className="section-title">{t("demoLogins")}</div>
-            {demoAccounts.map(([label, email, password]) => (
-              <button
-                className="demo-login"
-                key={email}
-                onClick={() => {
-                  setLoginEmail(email);
-                  setLoginPassword(password);
-                }}
-                type="button"
-              >
-                <span>{label}</span>
-                <small>{email}</small>
-              </button>
-            ))}
-          </div>
         </section>
       </main>
     );
@@ -385,7 +465,10 @@ export default function App() {
 
   return (
     <div className="shell">
-      <aside className="sidebar">
+      {isSidebarOpen && (
+        <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)} />
+      )}
+      <aside className={`sidebar ${isSidebarOpen ? "open" : ""}`}>
         <div className="brand">
           <div className="brand-mark">C</div>
           <div>
@@ -399,7 +482,10 @@ export default function App() {
           group="work"
           items={navItems}
           label={t("workGroup")}
-          onNavigate={setActiveView}
+          onNavigate={(view) => {
+            setActiveView(view);
+            setIsSidebarOpen(false);
+          }}
           t={t}
         />
         <NavGroup
@@ -407,7 +493,10 @@ export default function App() {
           group="management"
           items={navItems}
           label={t("managementGroup")}
-          onNavigate={setActiveView}
+          onNavigate={(view) => {
+            setActiveView(view);
+            setIsSidebarOpen(false);
+          }}
           t={t}
         />
         <NavGroup
@@ -415,7 +504,10 @@ export default function App() {
           group="admin"
           items={navItems}
           label={t("adminGroup")}
-          onNavigate={setActiveView}
+          onNavigate={(view) => {
+            setActiveView(view);
+            setIsSidebarOpen(false);
+          }}
           t={t}
         />
 
@@ -434,18 +526,182 @@ export default function App() {
 
       <div className="main">
         <div className="topbar">
-          <div>
+          <button
+            className="mobile-menu-toggle"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            type="button"
+            aria-label="Открыть меню"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+          <div className="topbar-title-block">
             <div className="topbar-title">{currentTitle[0]}</div>
             <div className="topbar-sub">{currentTitle[1]}</div>
           </div>
-          <div className="search">{t("searchPlaceholder")}</div>
-          <div className="topbar-actions">
-            {/* Language Switcher RU / KK / EN */}
-            <div className="lang-switcher">
-              <button className={`lang-btn ${lang === "ru" ? "active" : ""}`} onClick={() => changeLanguage("ru")} type="button">RU</button>
-              <button className={`lang-btn ${lang === "kk" ? "active" : ""}`} onClick={() => changeLanguage("kk")} type="button">KK</button>
-              <button className={`lang-btn ${lang === "en" ? "active" : ""}`} onClick={() => changeLanguage("en")} type="button">EN</button>
+          <div className="search-wrapper">
+              <div className="search-bar">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.35-4.35" />
+                </svg>
+                <input
+                  className="search-input"
+                  placeholder={
+                    isWarehouse
+                      ? "Поиск материалов на складе…"
+                      : isOrders
+                      ? "Поиск по заказам…"
+                      : isCrm && canManageUsers
+                      ? "Поиск по клиентам…"
+                      : isMyTasks
+                      ? "Поиск по моим задачам…"
+                      : t("searchPlaceholder")
+                  }
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setIsSearchOpen(true);
+                  }}
+                  onFocus={() => setIsSearchOpen(true)}
+                />
+                {searchQuery && (
+                  <button
+                    className="search-clear"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setIsSearchOpen(false);
+                    }}
+                    type="button"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              {isSearchOpen && searchQuery.trim() && (
+                <div className="search-dropdown">
+                  {(isOrders || isGeneral) && searchResults.orders.length > 0 && (
+                    <div className="search-group">
+                      <div className="search-group-title">📦 Заказы ({searchResults.orders.length})</div>
+                      {searchResults.orders.slice(0, 5).map((order) => (
+                        <div
+                          className="search-result-item"
+                          key={order.id}
+                          onClick={() => {
+                            setModalOrder(order.id);
+                            setIsSearchOpen(false);
+                          }}
+                        >
+                          <div>
+                            <div className="search-result-main">№{order.id} · {order.title}</div>
+                            <div className="search-result-sub">{order.client}</div>
+                          </div>
+                          <span className="mono" style={{ fontSize: "12px", color: "var(--accent)" }}>{money(order.sum)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {canManageUsers && (isCrm || isGeneral) && searchResults.clients.length > 0 && (
+                    <div className="search-group">
+                      <div className="search-group-title">👤 Клиенты ({searchResults.clients.length})</div>
+                      {searchResults.clients.slice(0, 5).map((client) => {
+                        const idx = clientsList.findIndex((c) => c.name === client.name);
+                        return (
+                          <div
+                            className="search-result-item"
+                            key={client.name}
+                            onClick={() => {
+                              setSelectedClient(idx >= 0 ? idx : 0);
+                              setActiveView("crm");
+                              setIsSearchOpen(false);
+                            }}
+                          >
+                            <div>
+                              <div className="search-result-main">{client.name}</div>
+                              <div className="search-result-sub">{client.sub} · {client.phone}</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {(isWarehouse || isGeneral) && searchResults.materials.length > 0 && (
+                    <div className="search-group">
+                      <div className="search-group-title">🛠️ Товары на складе ({searchResults.materials.length})</div>
+                      {searchResults.materials.slice(0, 5).map((mat) => (
+                        <div
+                          className="search-result-item"
+                          key={mat.name}
+                          onClick={() => {
+                            setActiveView("warehouse");
+                            setIsSearchOpen(false);
+                          }}
+                        >
+                          <div>
+                            <div className="search-result-main">{mat.name}</div>
+                            <div className="search-result-sub">Остаток: {mat.stock} {mat.unit}</div>
+                          </div>
+                          {statusBadge(mat.status)}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {(isMyTasks || isGeneral) && searchResults.tasks.length > 0 && (
+                    <div className="search-group">
+                      <div className="search-group-title">📋 Мои задачи ({searchResults.tasks.length})</div>
+                      {searchResults.tasks.slice(0, 5).map((task) => (
+                        <div
+                          className="search-result-item"
+                          key={task.id + task.title}
+                          onClick={() => {
+                            setActiveView("my_tasks");
+                            setIsSearchOpen(false);
+                          }}
+                        >
+                          <div>
+                            <div className="search-result-main">№{task.id} · {task.title}</div>
+                            <div className="search-result-sub">{task.client} · {task.status}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {((isOrders && searchResults.orders.length === 0) ||
+                    (isWarehouse && searchResults.materials.length === 0) ||
+                    (isCrm && canManageUsers && searchResults.clients.length === 0) ||
+                    (isMyTasks && searchResults.tasks.length === 0) ||
+                    (isGeneral &&
+                      searchResults.orders.length === 0 &&
+                      (!canManageUsers || searchResults.clients.length === 0) &&
+                      searchResults.materials.length === 0 &&
+                      searchResults.tasks.length === 0)) && (
+                      <div style={{ padding: "12px", textAlign: "center", color: "var(--ink-soft)", fontSize: "13px" }}>
+                        Ничего не найдено по запросу «{searchQuery}»
+                      </div>
+                    )}
+                </div>
+              )}
             </div>
+          <div className="topbar-actions">
+            {/* Language Switcher Dropdown */}
+            <select
+              className="lang-select"
+              value={lang}
+              onChange={(e) => changeLanguage(e.target.value as Language)}
+              aria-label="Язык / Tілі / Language"
+            >
+              <option value="ru">🇷🇺 RU</option>
+              <option value="kk">🇰🇿 KK</option>
+              <option value="en">🇬🇧 EN</option>
+            </select>
 
             <button
               className="icon-btn"
@@ -466,7 +722,18 @@ export default function App() {
           {visibleViews.has("crm") ? <CrmView selectedClient={selectedClient} setSelectedClient={setSelectedClient} t={t} /> : null}
           {visibleViews.has("orders") ? <OrdersView onOpenOrder={setModalOrder} t={t} /> : null}
           {visibleViews.has("production") ? <ProductionView statusBadge={statusBadge} t={t} /> : null}
-          {visibleViews.has("my_tasks") ? <MyTasksView roleLabel={workspace.role_label} statusBadge={statusBadge} t={t} workflow={workspace.workflow} /> : null}
+          {visibleViews.has("my_tasks") ? (
+            <MyTasksView
+              onOpenOrder={setModalOrder}
+              roleCode={user?.role}
+              roleLabel={workspace.role_label}
+              userName={user?.full_name}
+              showToast={showToast}
+              statusBadge={statusBadge}
+              t={t}
+              workflow={workspace.workflow}
+            />
+          ) : null}
           {visibleViews.has("warehouse") ? <WarehouseView statusBadge={statusBadge} t={t} /> : null}
           {visibleViews.has("store") ? <StoreView t={t} /> : null}
           {visibleViews.has("finance") ? <FinanceView t={t} /> : null}
@@ -481,9 +748,54 @@ export default function App() {
         </div>
       </div>
 
-      {modalOrder ? <OrderModal onClose={() => setModalOrder(null)} orderId={modalOrder} onSave={() => showToast("Статус заказа обновлен")} t={t} /> : null}
+      {modalOrder ? (
+        <OrderModal
+          onClose={() => setModalOrder(null)}
+          orderId={modalOrder}
+          ordersList={ordersList}
+          setClientsList={setClientsList}
+          setOrdersList={setOrdersList}
+          showToast={showToast}
+          t={t}
+        />
+      ) : null}
       {activeModal ? <ActionModal modalType={activeModal} onClose={() => setActiveModal(null)} onSuccess={showToast} setClientsList={setClientsList} setFinanceList={setFinanceList} setMaterialsList={setMaterialsList} setOrdersList={setOrdersList} t={t} /> : null}
       {toastMessage ? <div className="toast-notification">{toastMessage}</div> : null}
+      {confirmAction && (
+        <div className="overlay active" onClick={() => setConfirmAction(null)} style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
+          <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "520px", width: "100%", margin: "auto" }}>
+            <div className="modal-head">
+              <h3>Подтверждение действия</h3>
+              <button className="modal-close" onClick={() => setConfirmAction(null)}>×</button>
+            </div>
+            <div className="modal-body" style={{ display: "flex", flexDirection: "column", gap: "16px", fontSize: "14px", padding: "24px" }}>
+              <p style={{ fontWeight: 500, color: "var(--ink)", fontSize: "15px", margin: 0 }}>
+                Действие: <strong style={{ color: "var(--accent)" }}>{confirmAction.actionName}</strong>
+              </p>
+              <div style={{ background: "var(--surface-2)", padding: "16px", borderRadius: "8px", border: "1px solid var(--line)" }}>
+                <div style={{ fontWeight: 600, fontSize: "14px" }}>Заказ №{confirmAction.orderId}</div>
+                <div style={{ fontSize: "13px", marginTop: "6px", color: "var(--ink-soft)" }}>{confirmAction.taskTitle}</div>
+              </div>
+              <p style={{ color: "var(--ink-soft)", fontSize: "13px", lineHeight: "1.5", margin: 0 }}>
+                Вы действительно хотите выполнить это действие? Пожалуйста, подтвердите.
+              </p>
+              <div className="form-actions" style={{ marginTop: "8px", display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                <button className="btn ghost" onClick={() => setConfirmAction(null)} type="button">Отмена</button>
+                <button
+                  className="btn primary"
+                  onClick={() => {
+                    confirmAction.onConfirm();
+                    setConfirmAction(null);
+                  }}
+                  type="button"
+                >
+                  Подтвердить
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 
@@ -540,20 +852,52 @@ export default function App() {
   }
 
   function CrmView({ selectedClient, setSelectedClient, t }: { selectedClient: number; setSelectedClient: (index: number) => void; t: (k: string) => string }) {
-    const client = clientsList[selectedClient] ?? clientsList[0];
+    const [localCrmSearch, setLocalCrmSearch] = useState("");
+    const isCrm = activeView === "crm";
+    const effectiveSearch = localCrmSearch || (isCrm ? searchQuery : "");
+
+    const q = effectiveSearch.trim().toLowerCase();
+    const filteredClients = q
+      ? clientsList.filter(
+          (c) =>
+            c.name.toLowerCase().includes(q) ||
+            c.sub.toLowerCase().includes(q) ||
+            c.phone.toLowerCase().includes(q)
+        )
+      : clientsList;
+    const client = filteredClients[selectedClient] ?? filteredClients[0];
     return (
       <View id="crm">
         <div className="view-head">
           <div><span className="eyebrow">CRM</span><h1>{t("title_crm")}</h1></div>
-          <button className="btn primary" onClick={() => setActiveModal("new_client")} type="button">{t("btn_new_client")}</button>
+          <div className="head-actions">
+            {canManageUsers ? (
+              <div className="search-bar" style={{ minWidth: "260px" }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.35-4.35" />
+                </svg>
+                <input
+                  className="search-input"
+                  placeholder="Поиск клиентов (название, телефон)..."
+                  value={localCrmSearch}
+                  onChange={(e) => setLocalCrmSearch(e.target.value)}
+                />
+                {localCrmSearch && (
+                  <button className="search-clear" onClick={() => setLocalCrmSearch("")} type="button">×</button>
+                )}
+              </div>
+            ) : null}
+            <button className="btn primary" onClick={() => setActiveModal("new_client")} type="button">{t("btn_new_client")}</button>
+          </div>
         </div>
         <div className="two-col">
           <div className="panel">
-            <div className="panel-head"><h3>{t("hdr_client_database")}</h3><span className="tag">{clientsList.length}</span></div>
+            <div className="panel-head"><h3>{t("hdr_client_database")}</h3><span className="tag">{filteredClients.length}</span></div>
             <table>
               <thead><tr><th>{t("col_client")}</th><th>{t("col_phone")}</th><th>{t("col_orders")}</th><th>{t("col_total")}</th><th>{t("col_debt")}</th></tr></thead>
               <tbody>
-                {clientsList.map((item, index) => (
+                {filteredClients.map((item, index) => (
                   <tr key={item.name} onClick={() => setSelectedClient(index)}>
                     <td><div className="client-row-name">{item.name}</div><div className="client-row-sub">{item.sub}</div></td>
                     <td className="mono">{item.phone}</td>
@@ -591,11 +935,40 @@ export default function App() {
   }
 
   function OrdersView({ onOpenOrder, t }: { onOpenOrder: (id: string) => void; t: (k: string) => string }) {
+    const [localOrderSearch, setLocalOrderSearch] = useState("");
+    const effectiveSearch = localOrderSearch || (activeView === "orders" ? searchQuery : "");
+
+    const q = effectiveSearch.trim().toLowerCase();
+    const filteredOrders = q
+      ? ordersList.filter(
+          (o) =>
+            o.id.toLowerCase().includes(q) ||
+            o.title.toLowerCase().includes(q) ||
+            o.client.toLowerCase().includes(q) ||
+            o.who.toLowerCase().includes(q)
+        )
+      : ordersList;
+
     return (
       <View id="orders">
         <div className="view-head">
           <div><span className="eyebrow">Управление заказами</span><h1>{t("title_orders")}</h1></div>
           <div className="head-actions">
+            <div className="search-bar" style={{ minWidth: "260px" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+              <input
+                className="search-input"
+                placeholder="Поиск по заказам (№, название)..."
+                value={localOrderSearch}
+                onChange={(e) => setLocalOrderSearch(e.target.value)}
+              />
+              {localOrderSearch && (
+                <button className="search-clear" onClick={() => setLocalOrderSearch("")} type="button">×</button>
+              )}
+            </div>
             <button
               className={`btn ${ordersViewMode === "list" ? "primary" : "ghost"}`}
               onClick={() => setOrdersViewMode(ordersViewMode === "board" ? "list" : "board")}
@@ -610,7 +983,7 @@ export default function App() {
         {ordersViewMode === "board" ? (
           <div className="board">
             {orderColumns.map((column) => {
-              const items = ordersList.filter((order) => order.col === column.key);
+              const items = filteredOrders.filter((order) => order.col === column.key);
               return (
                 <div className="col" key={column.key}>
                   <div className="col-bar" style={{ background: column.color }} />
@@ -634,11 +1007,11 @@ export default function App() {
           </div>
         ) : (
           <div className="panel">
-            <div className="panel-head"><h3>{t("hdr_all_orders")}</h3><span className="tag">{ordersList.length} всего</span></div>
+            <div className="panel-head"><h3>{t("hdr_all_orders")}</h3><span className="tag">{filteredOrders.length} найдено</span></div>
             <table>
               <thead><tr><th>№</th><th>{t("col_client")}</th><th>{t("col_item_name")}</th><th>{t("col_stage")}</th><th>{t("col_due")}</th><th>{t("col_assignee")}</th><th>{t("col_amount")}</th></tr></thead>
               <tbody>
-                {ordersList.map((order) => (
+                {filteredOrders.map((order) => (
                   <tr key={order.id} onClick={() => onOpenOrder(order.id)}>
                     <td className="mono">№{order.id}</td>
                     <td>{order.client}</td>
@@ -669,34 +1042,570 @@ export default function App() {
     );
   }
 
-  function MyTasksView({ roleLabel, statusBadge, t, workflow }: { roleLabel: string; statusBadge: (s: string) => React.ReactNode; t: (k: string) => string; workflow: string[] }) {
+  function MyTasksView({
+    onOpenOrder,
+    roleCode,
+    roleLabel,
+    userName,
+    showToast,
+    statusBadge,
+    t,
+    workflow,
+  }: {
+    onOpenOrder: (id: string) => void;
+    roleCode?: string;
+    roleLabel: string;
+    userName?: string;
+    showToast: (msg: string) => void;
+    statusBadge: (s: string) => React.ReactNode;
+    t: (k: string) => string;
+    workflow: string[];
+  }) {
+    const [localTaskSearch, setLocalTaskSearch] = useState("");
+    const [activeTaskDetails, setActiveTaskDetails] = useState<string | null>(null);
+    const isMyTasks = activeView === "my_tasks";
+    const effectiveSearch = localTaskSearch || (isMyTasks ? searchQuery : "");
+
+    const isDesigner = roleCode === "designer";
+    const isProduction = roleCode === "production";
+    const isInstaller = roleCode === "installer";
+
+    const displayName = userName || roleLabel;
+
     return (
       <View id="my_tasks">
-        <div className="view-head"><div><span className="eyebrow">Ролевое рабочее место</span><h1>{roleLabel}</h1></div><div className="tag">видны только свои задачи</div></div>
-        <div className="two-col">
-          <TasksPanel statusBadge={statusBadge} t={t} />
-          <div className="panel">
-            <div className="panel-head"><h3>{t("hdr_workflow")}</h3></div>
-            <div className="panel-body"><ol className="workflow-list">{workflow.map((item) => <li key={item}>{item}</li>)}</ol></div>
+        <div className="view-head">
+          <div>
+            <span className="eyebrow">Рабочее место • {roleLabel}</span>
+            <h1>{displayName}</h1>
+          </div>
+          <div className="head-actions">
+            <div className="search-bar" style={{ minWidth: "260px" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+              <input
+                className="search-input"
+                placeholder="Поиск по моим задачам..."
+                value={localTaskSearch}
+                onChange={(e) => setLocalTaskSearch(e.target.value)}
+              />
+              {localTaskSearch && (
+                <button className="search-clear" onClick={() => setLocalTaskSearch("")} type="button">×</button>
+              )}
+            </div>
+            <div className="tag">смена открыта • 09:00 - 18:00</div>
           </div>
         </div>
+
+        {isDesigner && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div className="cash-cards">
+              <div className="cash-card dark">
+                <h4>Макеты в работе</h4>
+                <div className="amt">3 макета</div>
+                <div className="sub">2 приоритетных</div>
+              </div>
+              <div className="cash-card orange">
+                <h4>На согласовании</h4>
+                <div className="amt">2 макета</div>
+                <div className="sub">ожидают ответа клиента</div>
+              </div>
+              <div className="cash-card green">
+                <h4>Утверждено за неделю</h4>
+                <div className="amt">8 макетов</div>
+                <div className="sub">передано в печать</div>
+              </div>
+            </div>
+
+            <div className="panel">
+              <div className="panel-head">
+                <h3>Очередь дизайна и макетов</h3>
+                <span className="tag">3 задачи</span>
+              </div>
+              <table>
+                <colgroup>
+                  <col style={{ width: "100px" }} />
+                  <col style={{ width: "240px" }} />
+                  <col style={{ width: "75px" }} />
+                  <col style={{ width: "140px" }} />
+                  <col style={{ width: "150px" }} />
+                  <col style={{ width: "350px" }} />
+                  <col />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>№ заказа</th>
+                    <th>Наименование и клиент</th>
+                    <th className="text-center">Версия</th>
+                    <th>Срок</th>
+                    <th className="text-center">Статус</th>
+                    <th className="text-center">Действия дизайнеру</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="mono" onClick={() => onOpenOrder("2046")} style={{ cursor: "pointer", textDecoration: "underline" }}>№2046</td>
+                    <td>
+                      <div className="user-cell-name">Ребдинг: вывеска + баннер</div>
+                      <div className="client-row-sub">ИП Ахметов Д.К.</div>
+                    </td>
+                    <td className="text-center"><span className="tag">v2</span></td>
+                    <td><span className="due ok">Завтра 10:00</span></td>
+                    <td className="text-center">{statusBadge("progress")}</td>
+                    <td className="text-center">
+                      <div className="card-actions" style={{ margin: 0 }}>
+                        <button
+                          className="btn primary"
+                          onClick={() => setConfirmAction({
+                            actionName: "Загрузить макет v2",
+                            orderId: "2046",
+                            taskTitle: "Ребрендинг: вывеска + баннер (ИП Ахметов Д.К.)",
+                            onConfirm: () => showToast("Макет v2 загружен и отправлен клиенту на согласование!")
+                          })}
+                          type="button"
+                        >
+                          Загрузить макет v2
+                        </button>
+                        <button
+                          className="btn ghost"
+                          onClick={() => showToast("ТЗ клиента tz_client.pdf успешно скачано")}
+                          type="button"
+                        >
+                          ТЗ
+                        </button>
+                      </div>
+                    </td>
+                    <td></td>
+                  </tr>
+
+                  <tr>
+                    <td className="mono" onClick={() => onOpenOrder("2044")} style={{ cursor: "pointer", textDecoration: "underline" }}>№2044</td>
+                    <td>
+                      <div className="user-cell-name">Объемные буквы, подсветка</div>
+                      <div className="client-row-sub">Магазин «Балдырган»</div>
+                    </td>
+                    <td className="text-center"><span className="tag">v1</span></td>
+                    <td><span className="due soon">Сегодня 16:00</span></td>
+                    <td className="text-center">{statusBadge("queue")}</td>
+                    <td className="text-center">
+                      <div className="card-actions" style={{ margin: 0 }}>
+                        <button
+                          className="btn ghost"
+                          onClick={() => showToast("Комментарий клиента: Увеличить шрифт названия на 10%")}
+                          type="button"
+                        >
+                          Комментарии
+                        </button>
+                        <button
+                          className="btn primary"
+                          onClick={() => setConfirmAction({
+                            actionName: "Согласовать макет",
+                            orderId: "2044",
+                            taskTitle: "Объемные буквы, подсветка (Магазин «Балдырган»)",
+                            onConfirm: () => showToast("Макет v1 переведен в статус «Согласован»!")
+                          })}
+                          type="button"
+                        >
+                          Согласовать
+                        </button>
+                      </div>
+                    </td>
+                    <td></td>
+                  </tr>
+
+                  <tr>
+                    <td className="mono" onClick={() => onOpenOrder("2050")} style={{ cursor: "pointer", textDecoration: "underline" }}>№2050</td>
+                    <td>
+                      <div className="user-cell-name">Вывеска световая 2×0.6 м</div>
+                      <div className="client-row-sub">ИП Сатыбалдиева А.</div>
+                    </td>
+                    <td className="text-center"><span className="tag">черновик</span></td>
+                    <td><span className="due ok">8 июля</span></td>
+                    <td className="text-center">{statusBadge("info")}</td>
+                    <td className="text-center">
+                      <button
+                        className="btn ghost"
+                        onClick={() => setConfirmAction({
+                          actionName: "Запросить ТЗ у менеджера",
+                          orderId: "2050",
+                          taskTitle: "Вывеска световая 2×0.6 м (ИП Сатыбалдиева А.)",
+                          onConfirm: () => showToast("Запрос ТЗ отправлен менеджеру Гульнаре С.")
+                        })}
+                        type="button"
+                      >
+                        Запросить ТЗ
+                      </button>
+                    </td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {isProduction && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div className="cash-cards">
+              <div className="cash-card orange">
+                <h4>Текущее оборудование</h4>
+                <div className="amt">Roland 1.6m</div>
+                <div className="sub">Состояние: Исправен</div>
+              </div>
+              <div className="cash-card dark">
+                <h4>Выполнено за смену</h4>
+                <div className="amt">48 м²</div>
+                <div className="sub">3 заказа отпечатано</div>
+              </div>
+              <div className="cash-card green">
+                <h4>Расход материалов</h4>
+                <div className="amt">64 м²</div>
+                <div className="sub">Баннер 440г + Оракал</div>
+              </div>
+            </div>
+
+            <div className="two-col">
+              <div className="panel">
+                <div className="panel-head">
+                  <h3>Очередь печати и сборки цеха</h3>
+                </div>
+                <table>
+                  <colgroup>
+                    <col style={{ width: "80px" }} />
+                    <col style={{ width: "220px" }} />
+                    <col style={{ width: "180px" }} />
+                    <col style={{ width: "160px" }} />
+                    <col style={{ width: "190px" }} />
+                    <col />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>Заказ</th>
+                      <th>Задача</th>
+                      <th className="text-center">Материал / Параметры</th>
+                      <th className="text-center">Статус</th>
+                      <th className="text-center">Действия</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="mono" onClick={() => onOpenOrder("2039")} style={{ cursor: "pointer", textDecoration: "underline" }}>№2039</td>
+                      <td>Печать баннера 6×3 м</td>
+                      <td className="text-center" style={{ position: "relative" }}>
+                        <button
+                          className="tag"
+                          style={{ border: "1px solid var(--line-strong)", cursor: "pointer", background: "var(--surface-2)", font: "inherit", fontSize: "12px", padding: "4px 8px", borderRadius: "6px" }}
+                          onClick={() => setActiveTaskDetails(activeTaskDetails === "2039" ? null : "2039")}
+                          type="button"
+                        >
+                          18 м² · 440г
+                        </button>
+                        {activeTaskDetails === "2039" && (
+                          <div className="task-details-dropdown">
+                            <div className="task-details-title">Подробное описание задачи</div>
+                            <div className="task-details-desc">
+                              Широкоформатная печать рекламного баннера 6×3 м на Roland. Требуется проклейка краев и установка люверсов по всему периметру с шагом 30 см.
+                            </div>
+                            <div className="task-details-materials">
+                              <strong>Расход материалов:</strong>
+                              <ul style={{ margin: "4px 0 0", paddingLeft: "16px", fontSize: "12px", lineHeight: "1.4" }}>
+                                <li>Баннерная ткань 440г: 18 м²</li>
+                                <li>Люверсы металлические 12мм: 60 шт</li>
+                                <li>Клей Cosmofen: 1 шт</li>
+                              </ul>
+                            </div>
+                          </div>
+                        )}
+                      </td>
+                      <td className="text-center">{statusBadge("progress")}</td>
+                      <td className="text-center">
+                        <button
+                          className="btn primary"
+                          onClick={() => setConfirmAction({
+                            actionName: "Завершить печать",
+                            orderId: "2039",
+                            taskTitle: "Печать баннера 6×3 м (ТОО «Сыр Дария Восток»)",
+                            onConfirm: () => showToast("Печать заказа №2039 завершена! Заказ передан на люверсы.")
+                          })}
+                          type="button"
+                        >
+                          Завершить печать
+                        </button>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td className="mono" onClick={() => onOpenOrder("2038")} style={{ cursor: "pointer", textDecoration: "underline" }}>№2038</td>
+                      <td>Ламинация меню A2, 20 шт</td>
+                      <td className="text-center" style={{ position: "relative" }}>
+                        <button
+                          className="tag"
+                          style={{ border: "1px solid var(--line-strong)", cursor: "pointer", background: "var(--surface-2)", font: "inherit", fontSize: "12px", padding: "4px 8px", borderRadius: "6px" }}
+                          onClick={() => setActiveTaskDetails(activeTaskDetails === "2038" ? null : "2038")}
+                          type="button"
+                        >
+                          20 шт · матовая
+                        </button>
+                        {activeTaskDetails === "2038" && (
+                          <div className="task-details-dropdown">
+                            <div className="task-details-title">Подробное описание задачи</div>
+                            <div className="task-details-desc">
+                              Двусторонняя печать меню формата A2 на плотной бумаге 300г, матовая ламинация 75 мкм с обеих сторон, обрезка углов.
+                            </div>
+                            <div className="task-details-materials">
+                              <strong>Расход материалов:</strong>
+                              <ul style={{ margin: "4px 0 0", paddingLeft: "16px", fontSize: "12px", lineHeight: "1.4" }}>
+                                <li>Бумага мелованная 300г: 20 листов</li>
+                                <li>Пленка для ламинации матовая: 10 м²</li>
+                              </ul>
+                            </div>
+                          </div>
+                        )}
+                      </td>
+                      <td className="text-center">{statusBadge("queue")}</td>
+                      <td className="text-center">
+                        <button
+                          className="btn primary"
+                          onClick={() => setConfirmAction({
+                            actionName: "Взять в работу",
+                            orderId: "2038",
+                            taskTitle: "Ламинация меню A2, 20 шт (Ресторан «Атамекен»)",
+                            onConfirm: () => showToast("Заказ №2038 взят в работу печатником!")
+                          })}
+                          type="button"
+                        >
+                          Взять в работу
+                        </button>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td className="mono" onClick={() => onOpenOrder("2035")} style={{ cursor: "pointer", textDecoration: "underline" }}>№2035</td>
+                      <td>Резка объемных букв</td>
+                      <td className="text-center" style={{ position: "relative" }}>
+                        <button
+                          className="tag"
+                          style={{ border: "1px solid var(--line-strong)", cursor: "pointer", background: "var(--surface-2)", font: "inherit", fontSize: "12px", padding: "4px 8px", borderRadius: "6px" }}
+                          onClick={() => setActiveTaskDetails(activeTaskDetails === "2035" ? null : "2035")}
+                          type="button"
+                        >
+                          Акрил 3мм
+                        </button>
+                        {activeTaskDetails === "2035" && (
+                          <div className="task-details-dropdown">
+                            <div className="task-details-title">Подробное описание задачи</div>
+                            <div className="task-details-desc">
+                              Лазерная резка лицевых панелей объемных букв из молочного акрила по готовому макету v1. Склеивание с ПВХ бортами.
+                            </div>
+                            <div className="task-details-materials">
+                              <strong>Расход материалов:</strong>
+                              <ul style={{ margin: "4px 0 0", paddingLeft: "16px", fontSize: "12px", lineHeight: "1.4" }}>
+                                <li>Акрил молочный 3мм: 1.8 м²</li>
+                                <li>Пластик ПВХ вспененный 3мм: 2.2 м²</li>
+                              </ul>
+                            </div>
+                          </div>
+                        )}
+                      </td>
+                      <td className="text-center">{statusBadge("late")}</td>
+                      <td className="text-center">
+                        <button
+                          className="btn ghost"
+                          onClick={() => setConfirmAction({
+                            actionName: "Сигнал о браке",
+                            orderId: "2035",
+                            taskTitle: "Резка объемных букв (ИП Сатыбалдиева А.)",
+                            onConfirm: () => showToast("Сообщение о браке отправлено заведующему складом")
+                          })}
+                          type="button"
+                        >
+                          Сигнал о браке
+                        </button>
+                      </td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <LoadPanel t={t} />
+            </div>
+          </div>
+        )}
+
+        {isInstaller && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+            <div className="cash-cards">
+              <div className="cash-card dark">
+                <h4>Объекты монтажа</h4>
+                <div className="amt">2 выезда</div>
+                <div className="sub">1 в процессе</div>
+              </div>
+              <div className="cash-card orange">
+                <h4>Состав бригады</h4>
+                <div className="amt">Бригада №2</div>
+                <div className="sub">Ерлан Т. + Асхат М.</div>
+              </div>
+              <div className="cash-card green">
+                <h4>Спецавтомобиль</h4>
+                <div className="amt">ГАЗель</div>
+                <div className="sub">Госномер 224 АА 11</div>
+              </div>
+            </div>
+
+            <div className="panel">
+              <div className="panel-head">
+                <h3>Маршрутный лист выездного монтажника</h3>
+                <span className="tag">сегодня</span>
+              </div>
+              <table>
+                <colgroup>
+                  <col style={{ width: "100px" }} />
+                  <col style={{ width: "240px" }} />
+                  <col style={{ width: "220px" }} />
+                  <col style={{ width: "160px" }} />
+                  <col style={{ width: "150px" }} />
+                  <col style={{ width: "350px" }} />
+                  <col />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>№ заказа</th>
+                    <th>Объект и клиент</th>
+                    <th>Адрес монтажа</th>
+                    <th>Контакт клиента</th>
+                    <th className="text-center">Статус</th>
+                    <th className="text-center">Действия монтажнику</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className="mono" onClick={() => onOpenOrder("2031")} style={{ cursor: "pointer", textDecoration: "underline" }}>№2031</td>
+                    <td>
+                      <div className="user-cell-name">Монтаж баннера на фасад 3×2 м</div>
+                      <div className="client-row-sub">ИП Ахметов Д.К.</div>
+                    </td>
+                    <td>ул. Абая 45 (ТЦ «Сырдария»)</td>
+                    <td className="mono">+7 701 220 4411</td>
+                    <td className="text-center">{statusBadge("progress")}</td>
+                    <td className="text-center">
+                      <div className="card-actions" style={{ margin: 0 }}>
+                        <button
+                          className="btn primary"
+                          onClick={() => setConfirmAction({
+                            actionName: "Завершить монтаж (Фотоотчет)",
+                            orderId: "2031",
+                            taskTitle: "Монтаж баннера на фасад 3×2 м (ИП Ахметов Д.К.)",
+                            onConfirm: () => showToast("Фотоотчет сохранен! Заказ №2031 успешно завершен.")
+                          })}
+                          type="button"
+                        >
+                          Фотоотчет / Завершить
+                        </button>
+                        <button
+                          className="btn ghost"
+                          onClick={() => setConfirmAction({
+                            actionName: "Прибытие бригады: На объекте",
+                            orderId: "2031",
+                            taskTitle: "Монтаж баннера на фасад 3×2 м (ИП Ахметов Д.К.)",
+                            onConfirm: () => showToast("Уведомление клиенту отправлено: Бригада прибыла на объект")
+                          })}
+                          type="button"
+                        >
+                          На объекте
+                        </button>
+                      </div>
+                    </td>
+                    <td></td>
+                  </tr>
+
+                  <tr>
+                    <td className="mono" onClick={() => onOpenOrder("2029")} style={{ cursor: "pointer", textDecoration: "underline" }}>№2029</td>
+                    <td>
+                      <div className="user-cell-name">Указатели на объект, 8 шт</div>
+                      <div className="client-row-sub">ТОО «Кызылорда Строй Сервис»</div>
+                    </td>
+                    <td>Промзона 12, Объект №4</td>
+                    <td className="mono">+7 705 511 8890</td>
+                    <td className="text-center">{statusBadge("queue")}</td>
+                    <td className="text-center">
+                      <button
+                        className="btn primary"
+                        onClick={() => setConfirmAction({
+                          actionName: "Начать выезд монтажников",
+                          orderId: "2029",
+                          taskTitle: "Указатели на объект, 8 шт (ТОО «Кызылорда Строй Сервис»)",
+                          onConfirm: () => showToast("Выезд по заказу №2029 начат!")
+                        })}
+                        type="button"
+                      >
+                        Начать выезд
+                      </button>
+                    </td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {!isDesigner && !isProduction && !isInstaller && (
+          <div className="two-col">
+            <TasksPanel statusBadge={statusBadge} t={t} />
+            <div className="panel">
+              <div className="panel-head">
+                <h3>{t("hdr_workflow")}</h3>
+              </div>
+              <div className="panel-body">
+                <ol className="workflow-list">
+                  {workflow.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          </div>
+        )}
       </View>
     );
   }
 
   function WarehouseView({ statusBadge, t }: { statusBadge: (s: string) => React.ReactNode; t: (k: string) => string }) {
+    const [localWarehouseSearch, setLocalWarehouseSearch] = useState("");
+    const effectiveSearch = localWarehouseSearch || (activeView === "inventory" ? searchQuery : "");
+
     return (
       <View id="warehouse">
         <div className="view-head">
           <div><span className="eyebrow">Складской учет</span><h1>{t("title_warehouse")}</h1></div>
           <div className="head-actions">
+            <div className="search-bar" style={{ minWidth: "260px" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.35-4.35" />
+              </svg>
+              <input
+                className="search-input"
+                placeholder="Поиск товаров на складе..."
+                value={localWarehouseSearch}
+                onChange={(e) => setLocalWarehouseSearch(e.target.value)}
+              />
+              {localWarehouseSearch && (
+                <button className="search-clear" onClick={() => setLocalWarehouseSearch("")} type="button">×</button>
+              )}
+            </div>
             <button className="btn ghost" onClick={() => setActiveModal("inventory_audit")} type="button">{t("btn_conduct_audit")}</button>
             <button className="btn primary" onClick={() => setActiveModal("add_material")} type="button">{t("btn_add_material")}</button>
           </div>
         </div>
         <div className="panel">
           <div className="panel-head"><h3>{t("hdr_materials")}</h3><span className="tag">{t("tag_below_min")}</span></div>
-          <MaterialsTable materialsList={materialsList} statusBadge={statusBadge} t={t} />
+          <MaterialsTable materialsList={materialsList} searchQuery={effectiveSearch} statusBadge={statusBadge} t={t} />
         </div>
       </View>
     );
@@ -1067,13 +1976,28 @@ function LoadPanel({ t }: { t: (k: string) => string }) {
   return <div className="panel"><div className="panel-head"><h3>{t("hdr_load_today")}</h3></div><div className="panel-body load-list">{[["Дизайн — Молдир К.", 70, "var(--accent)"], ["Печать — Бауыржан Е.", 92, "var(--bad)"], ["Сборка/резка — Асхат М.", 45, "var(--good)"], ["Монтаж — Ерлан Т.", 60, "var(--warn)"]].map(([label, width, color]) => <div key={String(label)}><div className="client-row-sub">{label}</div><div className="stock-bar wide"><span style={{ background: String(color), width: `${width}%` }} /></div></div>)}</div></div>;
 }
 
-function MaterialsTable({ materialsList, statusBadge, t }: { materialsList: Material[]; statusBadge: (s: string) => React.ReactNode; t: (k: string) => string }) {
+function MaterialsTable({
+  materialsList,
+  searchQuery,
+  statusBadge,
+  t,
+}: {
+  materialsList: Material[];
+  searchQuery?: string;
+  statusBadge: (s: string) => React.ReactNode;
+  t: (k: string) => string;
+}) {
+  const q = searchQuery?.trim().toLowerCase() ?? "";
+  const filtered = q
+    ? materialsList.filter((m) => m.name.toLowerCase().includes(q) || m.unit.toLowerCase().includes(q))
+    : materialsList;
+
   const colorMap: Record<string, string> = { good: "#1F9D6E", warn: "#C98A00", bad: "#E23B3B" };
   return (
     <table>
       <thead><tr><th>{t("col_material")}</th><th>{t("col_unit")}</th><th>{t("col_stock")}</th><th>{t("col_min_stock")}</th><th>{t("col_cost")}</th><th>{t("col_status")}</th></tr></thead>
       <tbody>
-        {materialsList.map((material) => {
+        {filtered.map((material) => {
           const pct = Math.min(100, Math.round((material.stock / (material.min * 2)) * 100));
           return (
             <tr key={material.name}>
@@ -1119,21 +2043,217 @@ function Kv({ danger, label, value }: { danger?: boolean; label: string; value: 
   return <div className="kv"><span className="k">{label}</span><span className={`mono ${danger ? "danger-text" : ""}`}>{value}</span></div>;
 }
 
-function OrderModal({ onClose, onSave, orderId, t }: { onClose: () => void; onSave?: () => void; orderId: string; t: (k: string) => string }) {
+function OrderModal({
+  onClose,
+  onSave,
+  orderId,
+  ordersList,
+  setOrdersList,
+  setClientsList,
+  showToast,
+  t,
+}: {
+  onClose: () => void;
+  onSave?: () => void;
+  orderId: string;
+  ordersList: Order[];
+  setOrdersList: React.Dispatch<React.SetStateAction<Order[]>>;
+  setClientsList: React.Dispatch<React.SetStateAction<Client[]>>;
+  showToast: (msg: string) => void;
+  t: (k: string) => string;
+}) {
+  const isNew = orderId === "new";
+
+  // New order form state
+  const [clientName, setClientName] = useState("");
+  const [clientPhone, setClientPhone] = useState("+7 ");
+  const [title, setTitle] = useState("");
+  const [quantity, setQuantity] = useState("1");
+  const [sum, setSum] = useState("");
+  const todayStr = new Date().toISOString().split("T")[0];
+  const [due, setDue] = useState(todayStr);
+  const [who, setWho] = useState("ГС");
+
+  // Existing order state
+  const existingOrder = ordersList.find((o) => o.id === orderId);
   const stages = [
     t("step_0"), t("step_1"), t("step_2"), t("step_3"),
     t("step_4"), t("step_5"), t("step_6"), t("step_7"),
     t("step_8"), t("step_9"), t("step_10"), t("step_11")
   ];
-  const [currentIdx, setCurrentIdx] = useState(orderId === "new" ? 0 : 9);
+  const [currentIdx, setCurrentIdx] = useState(isNew ? 0 : 4);
+
+  const formatDateForOrder = (dateStr: string): string => {
+    if (!dateStr) return "сегодня";
+    try {
+      const parts = dateStr.split("-");
+      if (parts.length < 3) return dateStr;
+      const day = parseInt(parts[2], 10);
+      const month = parseInt(parts[1], 10);
+      const monthNames = ["янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек"];
+      return `${day} ${monthNames[month - 1] ?? ""}`.trim();
+    } catch {
+      return dateStr;
+    }
+  };
+
+  const handleCreateOrder = (e: FormEvent) => {
+    e.preventDefault();
+    const nextId = (
+      Math.max(2050, ...ordersList.map((o) => Number(o.id) || 2000)) + 1
+    ).toString();
+    const qtyNum = Number(quantity) || 1;
+    const orderTitle = qtyNum > 1 ? `${title} (${qtyNum} шт)` : title;
+    const sumVal = Number(sum) || 0;
+
+    const newOrder: Order = {
+      id: nextId,
+      client: clientName || "Новый клиент",
+      title: orderTitle || "Заказ",
+      sum: sumVal,
+      due: formatDateForOrder(due),
+      dueStatus: "ok",
+      col: "new",
+      who: who || "ГС",
+    };
+
+    setOrdersList((prev) => [newOrder, ...prev]);
+
+    // Automatically register client if not already present
+    setClientsList((prev) => {
+      const exists = prev.some(
+        (c) => c.name.toLowerCase() === clientName.trim().toLowerCase()
+      );
+      if (!exists && clientName.trim()) {
+        return [
+          {
+            name: clientName.trim(),
+            sub: "клиент",
+            phone: clientPhone || "+7 700 000 0000",
+            orders: 1,
+            total: sumVal,
+            debt: 0,
+          },
+          ...prev,
+        ];
+      }
+      return prev;
+    });
+
+    showToast(`Заказ №${nextId} успешно создан!`);
+    onClose();
+  };
+
+  if (isNew) {
+    return (
+      <div className="overlay active">
+        <div className="modal">
+          <div className="modal-head">
+            <div>
+              <div className="topbar-sub mono">Новый заказ</div>
+              <h3>Оформление нового заказа</h3>
+            </div>
+            <button className="modal-close" onClick={onClose} type="button">×</button>
+          </div>
+          <form onSubmit={handleCreateOrder}>
+            <div className="modal-body" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div className="form-row-2">
+                <label className="modal-label">
+                  <span>Клиент (ФИО / Название компании) *</span>
+                  <input
+                    required
+                    placeholder="например: ИП Ахметов Д.К. или ТОО «Спарк»"
+                    value={clientName}
+                    onChange={(e) => setClientName(e.target.value)}
+                  />
+                </label>
+                <label className="modal-label">
+                  <span>Номер телефона *</span>
+                  <input
+                    required
+                    placeholder="+7 701 234 5678"
+                    value={clientPhone}
+                    onChange={(e) => setClientPhone(e.target.value)}
+                  />
+                </label>
+              </div>
+
+              <div className="form-row-2">
+                <label className="modal-label">
+                  <span>Что именно (наименование / услуга) *</span>
+                  <input
+                    required
+                    placeholder="например: Световая вывеска 2×0.6 м, оракал"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                </label>
+                <label className="modal-label">
+                  <span>Количество *</span>
+                  <input
+                    type="number"
+                    min="1"
+                    required
+                    placeholder="1"
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                  />
+                </label>
+              </div>
+
+              <div className="form-row-3">
+                <label className="modal-label">
+                  <span>Сумма (₸)</span>
+                  <input
+                    type="number"
+                    placeholder="150000"
+                    value={sum}
+                    onChange={(e) => setSum(e.target.value)}
+                  />
+                </label>
+                <label className="modal-label">
+                  <span>Срок выполнения *</span>
+                  <input
+                    type="date"
+                    required
+                    value={due}
+                    onChange={(e) => setDue(e.target.value)}
+                  />
+                </label>
+                <label className="modal-label">
+                  <span>Ответственный менеджер</span>
+                  <select value={who} onChange={(e) => setWho(e.target.value)}>
+                    <option value="ГС">Гульнара С. (ГС)</option>
+                    <option value="НБ">Нурлан Б. (НБ)</option>
+                    <option value="МК">Молдир К. (МК)</option>
+                    <option value="БЕ">Бауыржан Е. (БЕ)</option>
+                    <option value="ЕТ">Ерлан Т. (ЕТ)</option>
+                  </select>
+                </label>
+              </div>
+
+              <div className="card-actions" style={{ justifyContent: "flex-end", marginTop: "14px" }}>
+                <button className="btn ghost" onClick={onClose} type="button">Отмена</button>
+                <button className="btn primary" type="submit">Создать заказ</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  const displayTitle = existingOrder
+    ? `${existingOrder.title} — ${existingOrder.client}`
+    : "Баннер 3×2 м + монтаж — ИП Ахметов Д.К.";
 
   return (
     <div className="overlay active">
       <div className="modal">
         <div className="modal-head">
           <div>
-            <div className="topbar-sub mono">{orderId === "new" ? "Новый заказ" : `Заказ №${orderId}`}</div>
-            <h3>Баннер 3×2 м + монтаж — ИП Ахметов Д.К.</h3>
+            <div className="topbar-sub mono">Заказ №{orderId}</div>
+            <h3>{displayTitle}</h3>
           </div>
           <button className="modal-close" onClick={onClose} type="button">×</button>
         </div>
@@ -1154,28 +2274,26 @@ function OrderModal({ onClose, onSave, orderId, t }: { onClose: () => void; onSa
             <div>
               <div className="client-row-sub">{t("hdr_responsibles")}</div>
               <div className="tag-wrap">
-                <span className="tag">Менеджер: Гульнара С.</span>
+                <span className="tag">Менеджер: {existingOrder?.who ?? "Гульнара С."}</span>
                 <span className="tag">Монтажник: Ерлан Т.</span>
               </div>
             </div>
             <div>
               <div className="client-row-sub">{t("hdr_deadline")}</div>
-              <div className="deadline">3 июля, 18:00 · просрочен на 1 день</div>
+              <div className="deadline">{existingOrder?.due ?? "3 июля, 18:00"}</div>
             </div>
           </div>
           <div className="panel modal-panel">
             <div className="panel-head"><h3>{t("hdr_order_items")}</h3></div>
             <div className="panel-body compact">
-              <div className="line-item"><span>Баннер, баннерная ткань 440г, 3×2 м, люверсы</span><span className="mono">96 000 ₸</span></div>
-              <div className="line-item"><span>Монтаж на фасад, выезд бригады</span><span className="mono">18 000 ₸</span></div>
-              <div className="line-item total"><span>Итого</span><span className="mono">114 000 ₸</span></div>
+              <div className="line-item"><span>{existingOrder?.title ?? "Изготовление рекламы"}</span><span className="mono">{existingOrder ? money(existingOrder.sum) : "114 000 ₸"}</span></div>
+              <div className="line-item total"><span>Итого</span><span className="mono">{existingOrder ? money(existingOrder.sum) : "114 000 ₸"}</span></div>
             </div>
           </div>
           <div className="files">
             <div className="client-row-sub">{t("hdr_files")}</div>
             <span className="file-chip">tz_client.pdf</span>
             <span className="file-chip">maket_v2.png</span>
-            <span className="file-chip">maket_v3_final.png</span>
           </div>
           <div className="card-actions" style={{ justifyContent: "flex-end", marginTop: "14px" }}>
             <button className="btn ghost" onClick={onClose} type="button">{t("btn_cancel")}</button>
